@@ -21,8 +21,8 @@ class PostController extends Controller
     public function store(PostRequest $request)
     {
         $post = new Post();
-        $post->title = $request->title;
-        $post->content = $request->content;
+        $post->titulo = $request->titulo;
+        $post->contenido = $request->contenido;
         $post->user_id = Auth::id();
         $post->save();
 
@@ -37,8 +37,8 @@ class PostController extends Controller
             return response()->json(['error' => 'No autorizado'], 403);
         }
 
-        $post->title = $request->title;
-        $post->content = $request->content;
+        $post->titulo = $request->titulo;
+        $post->contenido = $request->contenido;
         $post->save();
 
         return response()->json($post);
@@ -53,6 +53,7 @@ class PostController extends Controller
         }
 
         $post->delete();
-        return response()->json(['message' => 'Post eliminado']);
+
+        return response()->json(['mensaje' => 'Post eliminado']);
     }
 }

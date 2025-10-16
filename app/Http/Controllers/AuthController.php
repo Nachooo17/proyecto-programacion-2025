@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\User;
@@ -12,13 +13,13 @@ class AuthController extends Controller
         $request->validate([
             'nombre' => 'required|string|max:255',
             'correo' => 'required|string|email|unique:users,email',
-            'password' => 'required|string|min:6|confirmed',
+            'contrasena' => 'required|string|min:6|confirmed',
         ]);
 
         $usuario = User::create([
             'name' => $request->nombre,
             'email' => $request->correo,
-            'password' => Hash::make($request->password),
+            'password' => Hash::make($request->contrasena),
         ]);
 
         $token = $usuario->createToken('authToken')->accessToken;
@@ -30,12 +31,12 @@ class AuthController extends Controller
     {
         $request->validate([
             'correo' => 'required|string|email',
-            'password' => 'required|string',
+            'contrasena' => 'required|string',
         ]);
 
         $usuario = User::where('email', $request->correo)->first();
 
-        if (!$usuario || !Hash::check($request->password, $usuario->password)) {
+        if (!$usuario || !Hash::check($request->contrasena, $usuario->password)) {
             return response()->json(['mensaje' => 'Credenciales inválidas'], 401);
         }
 
