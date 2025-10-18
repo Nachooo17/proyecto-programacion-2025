@@ -24,25 +24,31 @@ class AuthController extends Controller
 
         $token = $usuario->createToken('authToken')->accessToken;
 
-        return response()->json(['usuario' => $usuario, 'token' => $token]);
+        return response()->json([
+            'usuario' => $usuario,
+            'token' => $token
+        ]);
     }
 
     public function iniciarSesion(Request $request)
     {
         $request->validate([
-            'correo' => 'required|string|email',
-            'contrasena' => 'required|string',
+            'correo' => 'required|email',
+            'password' => 'required'
         ]);
 
-        $usuario = User::where('email', $request->correo)->first();
+        $user = User::where('email', $request->correo)->first();
 
-        if (!$usuario || !Hash::check($request->contrasena, $usuario->password)) {
-            return response()->json(['mensaje' => 'Credenciales inválidas'], 401);
+        if (! $user || ! Hash::check($request->password, $user->password)) {
+            return response()->json(['mensaje' => 'Credenciales incorrectas'], 401);
         }
 
-        $token = $usuario->createToken('authToken')->accessToken;
+        $token = $user->createToken('authToken')->accessToken;
 
-        return response()->json(['usuario' => $usuario, 'token' => $token]);
+        return response()->json([
+            'usuario' => $user,
+            'token' => $token
+        ]);
     }
 }
 
