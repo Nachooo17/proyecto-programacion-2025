@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PostRequest;
 use App\Models\Post;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
@@ -13,17 +13,17 @@ class PostController extends Controller
         return Post::all();
     }
 
-    public function store(Request $request)
+    public function show($id)
     {
-        $request->validate([
-            'titulo' => 'required|string|max:255',
-            'contenido' => 'required|string',
-        ]);
+        return Post::findOrFail($id);
+    }
 
+    public function store(PostRequest $request)
+    {
         $post = Post::create([
             'titulo' => $request->titulo,
             'contenido' => $request->contenido,
-            'user_id' => Auth::id(),
+            'user_id' => Auth::id(), 
         ]);
 
         return response()->json([
@@ -32,12 +32,7 @@ class PostController extends Controller
         ], 201);
     }
 
-    public function show($id)
-    {
-        return Post::findOrFail($id);
-    }
-
-    public function update(Request $request, $id)
+    public function update(PostRequest $request, $id)
     {
         $post = Post::findOrFail($id);
 
@@ -45,12 +40,10 @@ class PostController extends Controller
             return response()->json(['mensaje' => 'No autorizado.'], 403);
         }
 
-        $request->validate([
-            'titulo' => 'required|string|max:255',
-            'contenido' => 'required|string',
+        $post->update([
+            'titulo' => $request->titulo,
+            'contenido' => $request->contenido,
         ]);
-
-        $post->update($request->all());
 
         return response()->json([
             'mensaje' => 'Post actualizado correctamente.',

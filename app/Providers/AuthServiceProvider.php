@@ -8,8 +8,8 @@ use Laravel\Passport\Passport;
 class AuthServiceProvider extends ServiceProvider
 {
     protected $policies = [
-       
-    ];
+    Post::class => PostPolicy::class,
+];
 
     public function boot()
     {
